@@ -19,6 +19,7 @@ public class UI {
             System.out.println("ERROR: " + e.getMessage());
         }
 
+        infoProc.invertedIndexing(clothesFromReadFile);
         menu();
     }
 
@@ -35,7 +36,8 @@ public class UI {
                 case "1":
                     System.out.println("Search for clothing product (type, brand, material):");
                     String searchTerm = scanner.nextLine();
-                    infoProc.findWords(clothesFromReadFile, searchTerm);
+                    //infoProc.findWords(clothesFromReadFile, searchTerm);
+                    infoProc.findWordsThroughIndex(clothesFromReadFile, searchTerm);
                     break;
                 case "2":
                     System.out.println("\n-== List of all clothing products ==-");
