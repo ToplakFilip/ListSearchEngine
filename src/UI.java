@@ -7,11 +7,10 @@ import java.io.File;
 
 public class UI {
 
-    private Scanner scanner = new Scanner(System.in);
-    private InformationProcessing infoProc = new InformationProcessing();
-    private ArrayList<String> readFile = new ArrayList<>();
-    private SearchingContext searchEngine = null;
-    private HashMap<String, HashSet<Integer>> indexedRows; //OVO BI TREBO PROJMENIT
+    private final Scanner scanner = new Scanner(System.in);
+    private final InformationProcessing infoProc = new InformationProcessing();
+    private final ArrayList<String> readFile = new ArrayList<>();
+    private HashMap<String, HashSet<Integer>> indexedRows;
 
     void start(String fileName) {
         File file = new File(fileName);
@@ -31,7 +30,7 @@ public class UI {
         while (true) {
             System.out.println("\n-== MENU ==-");
             System.out.println("1 - Find specific rows");
-            System.out.println("2 - Print all contents of a file");
+            System.out.println("2 - Print every row of a file");
             System.out.println("0 - Exit");
             String input = scanner.nextLine();
 
@@ -57,39 +56,44 @@ public class UI {
     }
 
     private void searchingStrategy() {
-
-        System.out.println("Select which way you want to search keywords:");
+        System.out.println("-= Select searching method =-");
+        System.out.println("1 - Rows contain ANY inputted keyword");
+        System.out.println("2 - Rows contain NO inputted keyword");
+        System.out.println("3 - Rows contain EVERY inputted keyword");
+        System.out.println("4 - Rows contain PARTS OF inputted keyword");
         String answer = scanner.nextLine();
         String[] parts;
         switch (answer) {
-            case "ANY":
+            case "1":
                 parts = typeWords();
-                searchEngine = new SearchingContext(new anySearch());
+                SearchingContext searchEngine = new SearchingContext(new anySearch());
                 searchEngine.doSearch(readFile, indexedRows, parts);
                 break;
-            case "NONE":
+            case "2":
                 parts = typeWords();
                 searchEngine = new SearchingContext(new noneSearch());
                 searchEngine.doSearch(readFile, indexedRows, parts);
                 break;
-            case "ALL":
+            case "3":
                 parts = typeWords();
                 searchEngine = new SearchingContext(new allSearch());
+                searchEngine.doSearch(readFile, indexedRows, parts);
+                break;
+            case "4":
+                parts = typeWords();
+                searchEngine = new SearchingContext(new partialSearch());
                 searchEngine.doSearch(readFile, indexedRows, parts);
                 break;
             default:
                 System.out.println("Wrong input");
                 break;
         }
-
-
     }
 
-    private String[] typeWords(){
+    private String[] typeWords() {
         System.out.println("Search for specific words in a row:");
         String searchTerm = scanner.nextLine();
         searchTerm = searchTerm.toLowerCase();
-        String[] parts = searchTerm.split(" ");
-        return parts;
+        return searchTerm.split(" ");
     }
 }

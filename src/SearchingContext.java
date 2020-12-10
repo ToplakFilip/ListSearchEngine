@@ -4,13 +4,13 @@ import java.util.HashSet;
 
 public class SearchingContext {
 
-    private SearchStrategy search;
+    private final SearchStrategy search;
 
     SearchingContext(SearchStrategy search) {
         this.search = search;
     }
 
-    int doSearch(ArrayList<String> readFile, HashMap<String, HashSet<Integer>> invertedIndexes, String[] words) {
-        return search.searchResult(readFile, invertedIndexes, words);
+    void doSearch(ArrayList<String> readFile, HashMap<String, HashSet<Integer>> invertedIndexes, String[] words) {
+        search.searchResult(readFile, invertedIndexes, words);
     }
 }

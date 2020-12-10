@@ -2,11 +2,9 @@ public class Main {
 
 
     public static void main(String[] args) {
-        // write your code here
-        if(args[0].equals("--data")) {
+        // name of file as CLI argument
             UI ui = new UI();
-            ui.start(args[1]);
-        }
+            ui.start(args[0]);
     }
 
 }
