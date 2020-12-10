@@ -1,5 +1,7 @@
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
 import java.io.File;
 
@@ -7,41 +9,41 @@ public class UI {
 
     private Scanner scanner = new Scanner(System.in);
     private InformationProcessing infoProc = new InformationProcessing();
-    private ArrayList<String> clothesFromReadFile = new ArrayList<>();
+    private ArrayList<String> readFile = new ArrayList<>();
+    private SearchingContext searchEngine = null;
+    private HashMap<String, HashSet<Integer>> indexedRows; //OVO BI TREBO PROJMENIT
 
     void start(String fileName) {
         File file = new File(fileName);
         try (Scanner fileScan = new Scanner(file)) {
             while (fileScan.hasNext()) {
-                clothesFromReadFile.add(fileScan.nextLine());
+                readFile.add(fileScan.nextLine());
             }
         } catch (FileNotFoundException e) {
             System.out.println("ERROR: " + e.getMessage());
         }
-
-        infoProc.invertedIndexing(clothesFromReadFile);
+        infoProc.invertedIndexing(readFile);
         menu();
     }
 
     void menu() {
         label:
         while (true) {
-            System.out.println("-== MENU ==-");
-            System.out.println("1 - Find a specific apparel");
-            System.out.println("2 - Print all clothing products");
+            System.out.println("\n-== MENU ==-");
+            System.out.println("1 - Find specific rows");
+            System.out.println("2 - Print all contents of a file");
             System.out.println("0 - Exit");
             String input = scanner.nextLine();
 
+            this.indexedRows = infoProc.getInvertedIndexes();
+
             switch (input) {
                 case "1":
-                    System.out.println("Search for clothing product (type, brand, material):");
-                    String searchTerm = scanner.nextLine();
-                    //infoProc.findWords(clothesFromReadFile, searchTerm);
-                    infoProc.findWordsThroughIndex(clothesFromReadFile, searchTerm);
+                    searchingStrategy();
                     break;
                 case "2":
-                    System.out.println("\n-== List of all clothing products ==-");
-                    for (String i : clothesFromReadFile) {
+                    System.out.println("\n-== List of all found rows that contain typed words ==-");
+                    for (String i : readFile) {
                         System.out.println(i);
                     }
                     break;
@@ -52,5 +54,42 @@ public class UI {
                     break;
             }
         }
+    }
+
+    private void searchingStrategy() {
+
+        System.out.println("Select which way you want to search keywords:");
+        String answer = scanner.nextLine();
+        String[] parts;
+        switch (answer) {
+            case "ANY":
+                parts = typeWords();
+                searchEngine = new SearchingContext(new anySearch());
+                searchEngine.doSearch(readFile, indexedRows, parts);
+                break;
+            case "NONE":
+                parts = typeWords();
+                searchEngine = new SearchingContext(new noneSearch());
+                searchEngine.doSearch(readFile, indexedRows, parts);
+                break;
+            case "ALL":
+                parts = typeWords();
+                searchEngine = new SearchingContext(new allSearch());
+                searchEngine.doSearch(readFile, indexedRows, parts);
+                break;
+            default:
+                System.out.println("Wrong input");
+                break;
+        }
+
+
+    }
+
+    private String[] typeWords(){
+        System.out.println("Search for specific words in a row:");
+        String searchTerm = scanner.nextLine();
+        searchTerm = searchTerm.toLowerCase();
+        String[] parts = searchTerm.split(" ");
+        return parts;
     }
 }

@@ -64,6 +64,11 @@ public class InformationProcessing {
             invertedIndexes.get(parts[i]).add(row);
         }
     }
+
+    HashMap<String, HashSet<Integer>> getInvertedIndexes(){
+        return invertedIndexes;
+    }
+
 //printing inverted indexing
     void printIt(){
         for(String i : invertedIndexes.keySet()){
