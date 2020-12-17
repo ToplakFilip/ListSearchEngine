@@ -12,5 +12,5 @@
 4 - Rows contain PARTS OF inputted keyword
 </pre>
 
-Simple search engine that uses inverted index data storing for faster searching through a file.
+Simple search engine that uses inverted index data storing for faster searching through a .txt file.
 Algorithms for searching use strategy design pattern for easier implementation.
